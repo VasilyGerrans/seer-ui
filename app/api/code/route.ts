@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const highlighter = await getHighlighter()
     const html = highlighter.codeToHtml(code, {
       lang: language,
-      theme: "github-dark",
+      theme: "one-light",
     })
 
     return NextResponse.json({

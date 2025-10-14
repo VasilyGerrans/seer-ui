@@ -23,7 +23,7 @@ export function TraceEntryComponent({ entry, projectRoot, depth, programAddress,
     ? entry.step.file.replace(projectRoot, "").replace(/^\//, "")
     : entry.step.file
 
-  const functionOrLine = entry.step.function ? entry.step.function : `line ${entry.step.line}`
+  const functionOrLine = entry.step.function ? entry.step.function : `${entry.step.line}`
 
   const hasChildren = entry.children && entry.children.length > 0
 
