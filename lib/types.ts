@@ -1,9 +1,11 @@
 export interface TraceEntry {
   instruction: number
-  file: string
-  line: number
-  function: string | null
-  call: boolean
+  step: {
+    file: string
+    line: number
+    function: string | null
+    call: boolean
+  }
   children?: TraceEntry[]
 }
 

@@ -53,7 +53,7 @@ export default function TransactionPage() {
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
-            <h1 className="text-xl font-mono font-semibold">Solana Transaction Tracer</h1>
+            <h1 className="text-xl font-mono font-semibold">Seer Transaction Trace</h1>
           </div>
           <form onSubmit={handleSearch} className="mt-4">
             <div className="relative max-w-2xl">
@@ -91,7 +91,6 @@ export default function TransactionPage() {
             <div className="space-y-2">
               <h2 className="text-2xl font-bold">Transaction Trace</h2>
               <p className="text-muted-foreground font-mono text-sm break-all">{hash}</p>
-              <p className="text-sm text-muted-foreground">{files.length} instruction(s) found</p>
             </div>
 
             <div className="space-y-6">
@@ -103,19 +102,18 @@ export default function TransactionPage() {
                         <span className="text-xs text-muted-foreground">Instruction</span>
                         <span className="font-mono font-semibold">{file.instructionNumber}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">Program</span>
-                        <span className="font-mono text-sm break-all">{file.programAddress}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">Order</span>
-                        <span className="font-mono">{file.executionOrder}</span>
-                      </div>
                     </div>
                   </div>
                   <div className="p-4">
                     {file.traces.map((trace, traceIndex) => (
-                      <TraceEntryComponent key={traceIndex} entry={trace} projectRoot={projectRoot} depth={0} />
+                      <TraceEntryComponent
+                        key={traceIndex}
+                        entry={trace}
+                        projectRoot={projectRoot}
+                        depth={0}
+                        programAddress={file.programAddress}
+                        isFirstInProgram={traceIndex === 0}
+                      />
                     ))}
                   </div>
                 </div>

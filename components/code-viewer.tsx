@@ -82,7 +82,6 @@ export function CodeViewer({ filePath, line, depth }: CodeViewerProps) {
     )
   }
 
-  // Split by line and add line numbers
   const lines = codeElement.innerHTML.split("\n")
 
   return (
@@ -99,9 +98,9 @@ export function CodeViewer({ filePath, line, depth }: CodeViewerProps) {
             const lineNumber = codeData.startLine + index
             const isTargetLine = lineNumber === codeData.targetLine
             return (
-              <div key={index} className={`flex gap-3 ${isTargetLine ? "bg-primary/20" : ""}`}>
+              <div key={index} className={`flex gap-3 ${isTargetLine ? "bg-accent/10" : ""}`}>
                 <span className="text-muted-foreground select-none w-8 text-right flex-shrink-0">{lineNumber}</span>
-                <code className="flex-1" dangerouslySetInnerHTML={{ __html: lineHtml || " " }} />
+                <code className="flex-1 whitespace-pre" dangerouslySetInnerHTML={{ __html: lineHtml || " " }} />
               </div>
             )
           })}
