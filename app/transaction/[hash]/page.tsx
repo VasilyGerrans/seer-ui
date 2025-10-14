@@ -9,6 +9,15 @@ import { Input } from "@/components/ui/input"
 import type { TransactionFile } from "@/lib/types"
 import { TraceEntryComponent } from "@/components/trace-entry"
 
+interface GroupedInstruction {
+  instructionNumber: number
+  traces: Array<{
+    entry: any
+    programAddress: string
+    isFirstInProgram: boolean
+  }>
+}
+
 export default function TransactionPage() {
   const params = useParams()
   const router = useRouter()
@@ -43,6 +52,30 @@ export default function TransactionPage() {
       router.push(`/transaction/${searchHash.trim()}`)
     }
   }
+
+  const groupedInstructions: GroupedInstruction[] = files.reduce((acc, file) => {
+    const existingInstruction = acc.find((group) => group.instructionNumber === file.instructionNumber)
+
+    const tracesWithMetadata = file.traces.map((trace, index) => ({
+      entry: trace,
+      programAddress: file.programAddress,
+      isFirstInProgram: index === 0,
+    }))
+
+    if (existingInstruction) {
+      existingInstruction.traces.push(...tracesWithMetadata)
+    } else {
+      acc.push({
+        instructionNumber: file.instructionNumber,
+        traces: tracesWithMetadata,
+      })
+    }
+
+    return acc
+  }, [] as GroupedInstruction[])
+
+  // Sort by instruction number
+  groupedInstructions.sort((a, b) => a.instructionNumber - b.instructionNumber)
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -94,25 +127,25 @@ export default function TransactionPage() {
             </div>
 
             <div className="space-y-6">
-              {files.map((file, index) => (
+              {groupedInstructions.map((instruction, index) => (
                 <div key={index} className="border border-border rounded-lg overflow-hidden bg-card">
                   <div className="bg-secondary px-4 py-3 border-b border-border">
                     <div className="flex items-center gap-4 flex-wrap">
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">Instruction</span>
-                        <span className="font-mono font-semibold">{file.instructionNumber}</span>
+                        <span className="font-mono font-semibold">{instruction.instructionNumber}</span>
                       </div>
                     </div>
                   </div>
                   <div className="p-4">
-                    {file.traces.map((trace, traceIndex) => (
+                    {instruction.traces.map((trace, traceIndex) => (
                       <TraceEntryComponent
                         key={traceIndex}
-                        entry={trace}
+                        entry={trace.entry}
                         projectRoot={projectRoot}
                         depth={0}
-                        programAddress={file.programAddress}
-                        isFirstInProgram={traceIndex === 0}
+                        programAddress={trace.programAddress}
+                        isFirstInProgram={trace.isFirstInProgram}
                       />
                     ))}
                   </div>
