@@ -23,10 +23,7 @@ export function TraceEntryComponent({ entry, projectRoot, depth, programAddress,
     ? entry.step.file.replace(projectRoot, "").replace(/^\//, "")
     : entry.step.file
 
-  // Format the display text
-  const displayText = entry.step.function
-    ? `${relativePath}:${entry.step.function}`
-    : `${relativePath}:line ${entry.step.line}`
+  const functionOrLine = entry.step.function ? entry.step.function : `line ${entry.step.line}`
 
   const hasChildren = entry.children && entry.children.length > 0
 
@@ -45,18 +42,27 @@ export function TraceEntryComponent({ entry, projectRoot, depth, programAddress,
           )}
           {!canShowCode && <span className="w-3" />}
         </div>
-        <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
+
+        <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            {entry.step.call && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-accent/20 text-accent border border-accent/30 flex-shrink-0">
+                CALL
+              </span>
+            )}
+            <span className={`break-all ${canShowCode ? "text-foreground" : "text-muted-foreground"}`}>
+              {relativePath}:
+            </span>
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground border border-border flex-shrink-0">
+              {functionOrLine}
+            </span>
+          </div>
+
           {isFirstInProgram && programAddress && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary border border-primary/20 flex-shrink-0 ml-auto">
               {programAddress}
             </span>
           )}
-          {entry.step.call && (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-accent/20 text-accent border border-accent/30">
-              CALL
-            </span>
-          )}
-          <span className="break-all text-foreground">{displayText}</span>
         </div>
       </div>
 

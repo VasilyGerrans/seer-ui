@@ -49,7 +49,7 @@ export default function TransactionPage() {
       <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => router.push("/")} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => router.push("/")} className="gap-2 hover:bg-secondary">
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>

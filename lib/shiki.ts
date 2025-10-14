@@ -5,7 +5,7 @@ let highlighterInstance: Awaited<ReturnType<typeof createHighlighter>> | null = 
 export async function getHighlighter() {
   if (!highlighterInstance) {
     highlighterInstance = await createHighlighter({
-      themes: ["github-dark"],
+      themes: ["github-light"],
       langs: ["rust", "typescript", "javascript", "python", "json", "toml", "yaml", "bash", "c", "cpp"],
     })
   }
