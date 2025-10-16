@@ -3,6 +3,7 @@ import { useState } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import type { TraceEntry } from "@/lib/types"
 import { CodeViewer } from "./code-viewer"
+import { loadProgramMap } from "@/lib/load-program-map"
 
 interface TraceEntryProps {
   entry: TraceEntry
@@ -18,10 +19,25 @@ export function TraceEntryComponent({ entry, projectRoot, depth, programAddress,
   const isInProjectRoot = entry.step.file.includes(projectRoot)
   const canShowCode = isInProjectRoot
 
-  // Get relative path by removing project root if present
-  const relativePath = entry.step.file.includes(projectRoot)
-    ? entry.step.file.replace(projectRoot, "").replace(/^\//, "")
-    : entry.step.file
+  let relativePath: string;
+
+  if (entry.step.file.includes(projectRoot)) {
+    relativePath = entry.step.file
+      .replace(projectRoot, "")
+      .replace(/^\//, "")
+      .replace("programs/", "");
+  } else {
+    relativePath = entry.step.file;
+  }
+
+  if (relativePath.includes(".cargo")) {
+    relativePath = relativePath.substring(relativePath.indexOf(".cargo"));
+  }
+
+  if (relativePath.includes("platform-tools")) {
+    const lastIndex = relativePath.lastIndexOf("platform-tools");
+    relativePath = relativePath.substring(lastIndex);
+  }
 
   const functionOrLine = entry.step.function ? entry.step.function : `${entry.step.line}`
 
@@ -45,14 +61,14 @@ export function TraceEntryComponent({ entry, projectRoot, depth, programAddress,
 
         <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 flex-wrap min-w-0">
+            <span className={`break-all ${canShowCode ? "text-foreground" : "text-muted-foreground"}`}>
+              {relativePath}:
+            </span>
             {entry.step.call && (
               <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-accent/20 text-accent border border-accent/30 flex-shrink-0">
                 CALL
               </span>
             )}
-            <span className={`break-all ${canShowCode ? "text-foreground" : "text-muted-foreground"}`}>
-              {relativePath}:
-            </span>
             <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground border border-border flex-shrink-0">
               {functionOrLine}
             </span>
