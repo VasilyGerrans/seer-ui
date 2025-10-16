@@ -25,6 +25,7 @@ export default function TransactionPage() {
 
   const [files, setFiles] = useState<TransactionFile[]>([])
   const [projectRoot, setProjectRoot] = useState<string>("")
+  const [programMap, setProgramMap] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [searchHash, setSearchHash] = useState(hash)
 
@@ -36,6 +37,16 @@ export default function TransactionPage() {
         const data = await response.json()
         setFiles(data.files || [])
         setProjectRoot(data.projectRoot || "")
+
+        if (data.projectRoot) {
+          try {
+            const mapResponse = await fetch(`/api/program-map?projectRoot=${encodeURIComponent(data.projectRoot)}`)
+            const mapData = await mapResponse.json()
+            setProgramMap(mapData.map || {})
+          } catch (error) {
+            console.error("[v0] Error loading program map:", error)
+          }
+        }
       } catch (error) {
         console.error("[v0] Error fetching transaction:", error)
       } finally {
@@ -56,9 +67,11 @@ export default function TransactionPage() {
   const groupedInstructions: GroupedInstruction[] = files.reduce((acc, file) => {
     const existingInstruction = acc.find((group) => group.instructionNumber === file.instructionNumber)
 
+    const displayAddress = programMap[file.programAddress] || file.programAddress
+
     const tracesWithMetadata = file.traces.map((trace, index) => ({
       entry: trace,
-      programAddress: file.programAddress,
+      programAddress: displayAddress,
       isFirstInProgram: index === 0,
     }))
 
@@ -74,7 +87,6 @@ export default function TransactionPage() {
     return acc
   }, [] as GroupedInstruction[])
 
-  // Sort by instruction number
   groupedInstructions.sort((a, b) => a.instructionNumber - b.instructionNumber)
 
   return (
