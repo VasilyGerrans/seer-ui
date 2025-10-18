@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 export async function loadProgramMap(projectRoot: string): Promise<Record<string, string>> {
-    const targetDir = path.join(projectRoot, "target", "debug");
+    const targetDir = path.join(projectRoot, "target", "deploy");
 
     if (!fs.existsSync(targetDir)) {
         throw new Error(`Directory not found: ${targetDir}`);
