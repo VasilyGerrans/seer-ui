@@ -71,7 +71,7 @@ export default function TransactionPage() {
 
     const tracesWithMetadata = file.traces.map((trace, index) => ({
       entry: trace,
-      programAddress: displayAddress,
+      programAddress: `${displayAddress}:${file.programAddress}`,
       isFirstInProgram: index === 0,
     }))
 
