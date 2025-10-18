@@ -17,7 +17,7 @@ export function TraceEntryComponent({ entry, projectRoot, depth, programAddress,
   const [isCodeOpen, setIsCodeOpen] = useState(false)
 
   const isInProjectRoot = entry.step.file.includes(projectRoot)
-  const canShowCode = isInProjectRoot
+  const canShowCode = isInProjectRoot && entry.step.line > 0;
 
   let relativePath: string;
 
@@ -61,12 +61,24 @@ export function TraceEntryComponent({ entry, projectRoot, depth, programAddress,
 
         <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 flex-wrap min-w-0">
-            <span className={`break-all ${canShowCode ? "text-foreground" : "text-muted-foreground"}`}>
-              {relativePath}:
-            </span>
-            {entry.step.call && (
+            {relativePath && (
+              <span className={`break-all ${canShowCode ? "text-foreground" : "text-muted-foreground"}`}>
+                {relativePath}:
+              </span>
+            )}
+            {entry.step.line == 0 && entry.step.call == false && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-primary/20 text-primary border border-accent/30 flex-shrink-0">
+                LOG
+              </span>
+            )}
+            {entry.step.call && entry.step.line > 0 && (
               <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-accent/20 text-accent border border-accent/30 flex-shrink-0">
                 CALL
+              </span>
+            )}
+            {entry.step.line == 0 && entry.step.call && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-destructive/20 text-destructive border border-destructive/20 flex-shrink-0">
+                ERROR
               </span>
             )}
             <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground border border-border flex-shrink-0">
