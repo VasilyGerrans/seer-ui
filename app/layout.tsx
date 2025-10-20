@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Seer",
   description: "Trace and analyze Solana transaction execution",
   generator: "v0.app",
+  icons: {
+    icon: "/icon.png", // or multiple versions: [{ rel: "icon", url: "/icon.png" }]
+  },
 }
 
 export default function RootLayout({
