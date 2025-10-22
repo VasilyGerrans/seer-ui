@@ -3,7 +3,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, Loader2, Search } from "lucide-react"
+import { ArrowLeft, Loader2, Search, ChevronDown, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { TransactionFile } from "@/lib/types"
@@ -28,6 +28,8 @@ export default function TransactionPage() {
   const [programMap, setProgramMap] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [searchHash, setSearchHash] = useState(hash)
+  const [errorData, setErrorData] = useState<any>(null)
+  const [isStateDumpOpen, setIsStateDumpOpen] = useState(false)
 
   useEffect(() => {
     const fetchTransaction = async () => {
@@ -37,6 +39,7 @@ export default function TransactionPage() {
         const data = await response.json()
         setFiles(data.files || [])
         setProjectRoot(data.projectRoot || "")
+        setErrorData(data.errorData || null)
 
         if (data.projectRoot) {
           try {
@@ -163,6 +166,29 @@ export default function TransactionPage() {
                   </div>
                 </div>
               ))}
+
+              {errorData && (
+                <div className="border border-border rounded-lg overflow-hidden bg-card">
+                  <div
+                    className="bg-secondary px-4 py-3 border-b border-border cursor-pointer hover:bg-secondary/80 transition-colors"
+                    onClick={() => setIsStateDumpOpen(!isStateDumpOpen)}
+                  >
+                    <div className="flex items-center gap-2">
+                      {isStateDumpOpen ? (
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      )}
+                      <span className="font-mono font-semibold">Local Variable Dump</span>
+                    </div>
+                  </div>
+                  {isStateDumpOpen && (
+                    <pre className="p-3 text-xs leading-relaxed font-mono text-foreground overflow-x-auto whitespace-pre">
+                      {JSON.stringify(errorData, null, 2).replace(/\[\s+([^]+?)\s+\]/g, (m, inner) => `[${inner.replace(/\s+/g, ' ')}]`)}
+                    </pre>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

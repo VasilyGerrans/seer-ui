@@ -25,10 +25,22 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ files: [] })
     }
 
-    // Parse each matching file
+    const errorFiles = matchingFiles.filter((file) => file.includes("_error.json"))
+    let errorData = null
+
+    if (errorFiles.length > 0) {
+      // Read the first error file found
+      const errorFilePath = join(seerPath, errorFiles[0])
+      const errorContent = await readFile(errorFilePath, "utf-8")
+      errorData = JSON.parse(errorContent)
+    }
+
+    // Parse each matching file (excluding error files)
     const transactionFiles: TransactionFile[] = []
 
     for (const filename of matchingFiles) {
+      if (filename.includes("_error.json")) continue
+
       // Parse filename: {txHash}_{instruction}_{program}_{order}.json
       const parts = filename.replace(".json", "").split("_")
       if (parts.length < 4) continue
@@ -57,7 +69,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Sort by execution order
     transactionFiles.sort((a, b) => a.executionOrder - b.executionOrder)
 
-    return NextResponse.json({ files: transactionFiles, projectRoot })
+    return NextResponse.json({ files: transactionFiles, projectRoot, errorData })
   } catch (error) {
     console.error("[v0] Error reading transaction files:", error)
     return NextResponse.json({ error: "Failed to read transaction files" }, { status: 500 })
