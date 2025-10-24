@@ -15,10 +15,6 @@ Part of the Seer Colosseum Cypherpunk hackathon submission.
     ```bash
     sudo ./install-cli.sh
     ```
-    (To uninstall CLI)
-    ```bash 
-    sudo rm /usr/local/bin/seer
-    ```
 3. Reopen your terminal to apply changes.
 4. Navigate to your Solana program project folder and run:
     ```bash
@@ -41,3 +37,9 @@ Part of the Seer Colosseum Cypherpunk hackathon submission.
     ./docker-run.sh ../demo`
     ```
 
+### Uninstall & Cleanup
+To uninstall the CLI command and clean up Docker resources, run:
+
+```bash
+./uninstall.sh
+```
