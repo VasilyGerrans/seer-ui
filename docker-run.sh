@@ -16,6 +16,6 @@ docker run \
   --rm \
   --name seer-ui \
   -p 3000:3000 \
-  -v "$PROJECT_PATH":/project \
-  -e PROJECT_ROOT=/project \
+  -v "$PROJECT_PATH":"$PROJECT_PATH" \
+  -e PROJECT_ROOT="$PROJECT_PATH" \
   seer-ui
