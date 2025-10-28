@@ -2,7 +2,8 @@
 
 UI for localhost visualisation of transaction traces generated using Seer. 
 
-Part of the Seer Colosseum Cypherpunk hackathon submission.
+Part of the **Seer** submission for the **Colosseum Cypherpunk Hackathon**.
+For a project overview, see the main repository: [seer](https://github.com/VasilyGerrans/seer).
 
 ## Usage
 
@@ -28,13 +29,13 @@ Part of the Seer Colosseum Cypherpunk hackathon submission.
     ```
 2. Run the UI by specifying the project path:
     ```bash
-    ./docker-run.sh <path_to_project>`
+    ./docker-run.sh <path_to_project>
     ```
 
     Replace <path_to_project> with the path to your Solana program project folder, for example:
 
     ```bash
-    ./docker-run.sh ../demo`
+    ./docker-run.sh ../demo
     ```
 
 ### Uninstall & Cleanup
